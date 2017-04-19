@@ -7,7 +7,13 @@ import android.support.test.runner.AndroidJUnit4;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.*;
+import java.util.List;
+
+import weather.test.wzx.com.wzxweather.entity.Citys;
+import weather.test.wzx.com.wzxweather.model.CityLab;
+import weather.test.wzx.com.wzxweather.util.LogUtil;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Instrumentation test, which will execute on an Android device.
@@ -22,5 +28,15 @@ public class ExampleInstrumentedTest {
         Context appContext = InstrumentationRegistry.getTargetContext();
 
         assertEquals("weather.test.wzx.com.wzxweather", appContext.getPackageName());
+    }
+    public void testLog(){
+
+
+        CityLab cityLab = new CityLab(InstrumentationRegistry.getContext());
+
+        List<Citys> c = cityLab.getAllCitys();
+
+        LogUtil.d("citys",c.get(0).getCityName());
+
     }
 }
