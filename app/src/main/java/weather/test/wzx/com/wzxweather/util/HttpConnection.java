@@ -45,7 +45,6 @@ public class HttpConnection {
                         String str = "";
                         while ((str = reader.readLine()) != null) {
 
-
                             builder.append(str);
 
                         }

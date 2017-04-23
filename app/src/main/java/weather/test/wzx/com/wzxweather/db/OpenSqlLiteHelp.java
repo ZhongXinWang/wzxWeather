@@ -4,7 +4,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import weather.test.wzx.com.wzxweather.model.CityDB;
+import weather.test.wzx.com.wzxweather.model.Schema;
+import weather.test.wzx.com.wzxweather.util.LogUtil;
 
 /**
  * Created by 王钟鑫 on 17/4/18.
@@ -12,29 +13,40 @@ import weather.test.wzx.com.wzxweather.model.CityDB;
 
 public class OpenSqlLiteHelp  extends SQLiteOpenHelper {
 
-    String SQL="create table "+ CityDB.CityTable.TABLENAME+" ("+
+    public static final String CITY="create table "+ Schema.CityTable.TABLENAME+" ("+
 
-            CityDB.CityTable.CityColumn.ID+" integer autoincrement primary key ,"+
-            CityDB.CityTable.CityColumn.NAME +" varchar(30) not null"+
-            ")";
+             Schema.CityTable.CityColumn.ID+" integer  primary key autoincrement,"+
+             Schema.CityTable.CityColumn.NAME +" text )";
 
-    public OpenSqlLiteHelp(Context context,String dbName,int version){
+    public static final String CITYSELECT="create table "+ Schema.CitySelect.TABLENAME+" ("+
 
-        super(context,dbName,null,version);
+             Schema.CitySelect.CityColumn.ID+" integer  primary key autoincrement,"+
+             Schema.CitySelect.CityColumn.ISSELECT+"integer default 0,"+
+             Schema.CitySelect.CityColumn.CITYID +" integer)";
 
+    public OpenSqlLiteHelp(Context context, String dbName, SQLiteDatabase.CursorFactory factory,int version){
+
+        super(context,dbName,factory,version);
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
 
-        sqLiteDatabase.execSQL(SQL);
+
+
+            sqLiteDatabase.execSQL(CITY);
+            sqLiteDatabase.execSQL(CITYSELECT);
+            LogUtil.d("Openlites","hello");
 
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
-        sqLiteDatabase.execSQL("drop table if exists "+CityDB.CityTable.TABLENAME);
+        sqLiteDatabase.execSQL("drop table if exists "+ Schema.CityTable.TABLENAME);
+        sqLiteDatabase.execSQL("drop table if exists "+ Schema.CitySelect.TABLENAME);
+
+        onCreate(sqLiteDatabase);
 
     }
 }

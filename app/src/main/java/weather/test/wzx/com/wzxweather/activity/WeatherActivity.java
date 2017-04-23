@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -48,5 +49,26 @@ public class WeatherActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+
+            case  R.id.adds:
+
+                AddCityActivity.startAction(WeatherActivity.this);
+
+                break;
+            case  R.id.sets:
+                break;
+            case R.id.share:
+                break;
+
+            default:
+                break;
+
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

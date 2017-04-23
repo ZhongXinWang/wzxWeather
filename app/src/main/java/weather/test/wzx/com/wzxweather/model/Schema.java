@@ -4,7 +4,7 @@ package weather.test.wzx.com.wzxweather.model;
  * Created by 王钟鑫 on 17/4/18.
  */
 
- public class CityDB {
+ public class Schema {
 
 
     public final static  String DBNAME="weather.db";
@@ -20,5 +20,18 @@ package weather.test.wzx.com.wzxweather.model;
         }
 
     }
+    public static class  CitySelect{
+
+        public final static  String TABLENAME="selectCity";
+        public static  class  CityColumn{
+
+            public final static String ID="_id";
+            public final static String CITYID="cityId";
+            public  final  static String ISSELECT ="isSelect";
+
+        }
+
+    }
+
 
 }

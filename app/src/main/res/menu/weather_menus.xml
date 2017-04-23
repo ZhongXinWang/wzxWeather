@@ -3,7 +3,7 @@
       xmlns:app="http://schemas.android.com/apk/res-auto"
     >
 
-        <item android:id="@+id/add" android:title="@string/menu_add" app:showAsAction="never|withText"></item>
+        <item android:id="@+id/adds" android:title="@string/menu_add" app:showAsAction="never|withText"></item>
 
         <item android:id="@+id/share" android:title="@string/menu_share" app:showAsAction="never|withText"></item>
 

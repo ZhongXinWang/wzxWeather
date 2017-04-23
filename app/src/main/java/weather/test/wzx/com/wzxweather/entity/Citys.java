@@ -28,4 +28,11 @@ public class Citys {
         return mId;
     }
 
+
+    @Override
+    public String toString() {
+
+        return getCityName();
+
+    }
 }

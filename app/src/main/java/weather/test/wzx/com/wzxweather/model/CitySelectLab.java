@@ -18,13 +18,13 @@ import weather.test.wzx.com.wzxweather.util.LogUtil;
  * 模型层主要封装对数据的操作
  */
 
-public class CityLab {
+public class CitySelectLab {
 
     private Context mContext;
     private OpenSqlLiteHelp mSqlLiteHelp = null;
     private SQLiteDatabase db = null;
 
-    public CityLab(Context context){
+    public CitySelectLab(Context context){
 
         this.mContext = context;
         mSqlLiteHelp = new OpenSqlLiteHelp(context, Schema.DBNAME,null,1);
@@ -55,68 +55,6 @@ public class CityLab {
 
     }
     //select
-    public void insertAllCitys(List<Citys> cityses){
-
-        String sql = "insert into "+ Schema.CityTable.TABLENAME+" ("+ Schema.CityTable.CityColumn.NAME+") values (?)";
-        boolean result = true;
-        if(cityses == null || cityses.size() == 0){
-
-            result = false;
-
-        }
-        try{
-
-            if(result) {
-
-
-                db = mSqlLiteHelp.getWritableDatabase();
-                db.beginTransaction();
-
-                for (Citys citys:cityses){
-
-                    try{
-
-                        db.execSQL(sql,new String[]{citys.getCityName()});
-
-                    }catch (Exception e){
-
-
-                        result  = false;
-                        break;
-
-                    }
-
-
-
-                }
-
-                if(result){
-
-                    db.setTransactionSuccessful();
-
-                }
-
-            }
-
-
-        }catch (Exception e){
-
-
-            LogUtil.d("insertAllError",e.getMessage());
-
-
-        }finally {
-
-            if(db != null){
-
-                db.endTransaction();
-                db.close();
-                db = null;
-
-            }
-        }
-
-    }
 
     public List<Citys>  getAllCitys(){
 
@@ -142,35 +80,6 @@ public class CityLab {
         }
 
         return null;
-
-    }
-    public List<Citys> getLimitCitys(int offset,int num){
-
-
-        //offset 表示从那一行开始取,num表示取的数目   如: 3 offset 2   会取到的offset    3,4,5    总共三条
-
-        String sql = "select *from "+ Schema.CityTable.TABLENAME + " limit "+num+" offset "+offset;
-        List<Citys> list;
-
-        try{
-
-            db =  mSqlLiteHelp.getReadableDatabase();
-            Cursor cursor = db.rawQuery(sql,null);
-            LogUtil.d("CityLab",sql);
-            list =  toCitysList(cursor);
-
-            return list.size()>0?list:null;
-
-        }catch (Exception e){
-
-
-
-            close();
-
-        }
-
-        return null;
-
 
     }
 
