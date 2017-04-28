@@ -11,4 +11,18 @@
         <item name="android:windowEnterAnimation">@anim/enter_anim</item>
         <item name="android:windowExitAnimation">@anim/out_anim</item>
     </style>
+    <style name="linelayout_padding">
+
+
+        <item name="android:gravity">center</item>
+        <item name="android:padding">@dimen/padding_size</item>
+    </style>
+
+    <style name="TextView_style">
+
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:textSize">@dimen/normal_size</item>
+        <item name="android:paddingTop">@dimen/top</item>
+    </style>
+
 </resources>

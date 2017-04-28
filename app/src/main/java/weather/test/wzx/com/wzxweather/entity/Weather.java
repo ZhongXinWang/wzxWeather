@@ -1,0 +1,28 @@
+package weather.test.wzx.com.wzxweather.entity;
+
+import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
+
+/**
+ * Created by 王钟鑫 on 17/4/27.
+ *
+ * GAON 解析的根节点
+ */
+
+
+public class Weather {
+
+    public AQI aqi;
+
+    public Basic basic;
+
+    public Now now;
+
+    public Suggestion suggestion;
+
+    //daily_forecast里面有多组数,所以要用集合来创建
+    @SerializedName("daily_forecast")
+    public List<Forecast> forecasts;
+
+}

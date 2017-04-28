@@ -39,20 +39,11 @@ public class HttpConnection {
 
 
                         InputStream inputStream = connection.getInputStream();
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-
-                        StringBuilder builder = new StringBuilder();
-                        String str = "";
-                        while ((str = reader.readLine()) != null) {
-
-                            builder.append(str);
-
-                        }
 
                         if (listener != null) {
 
 
-                            listener.onSuccess(builder);
+                            listener.onSuccess(inputStream);
 
                         }
 
@@ -97,4 +88,18 @@ public class HttpConnection {
 
 
     }
-}
+    public static StringBuilder inputStreamToString(InputStream stream) throws IOException {
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+
+        StringBuilder builder = new StringBuilder();
+        String str = "";
+        while ((str = reader.readLine()) != null) {
+
+            builder.append(str);
+
+        }
+        return builder;
+
+    }
+ }

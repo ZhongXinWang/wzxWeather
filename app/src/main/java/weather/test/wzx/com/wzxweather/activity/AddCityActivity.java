@@ -76,6 +76,7 @@ public class AddCityActivity extends AppCompatActivity {
 
                     mListView.setFilterText(newText);
 
+
                 }else{
 
                     mListView.clearTextFilter();

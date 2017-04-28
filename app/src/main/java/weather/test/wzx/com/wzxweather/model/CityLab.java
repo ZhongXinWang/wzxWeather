@@ -117,6 +117,8 @@ public class CityLab {
         }
 
     }
+    //获取所有的城市
+
 
     public List<Citys>  getAllCitys(){
 
@@ -127,9 +129,9 @@ public class CityLab {
         try{
 
             db =  mSqlLiteHelp.getReadableDatabase();
-           Cursor cursor = db.rawQuery(sql,null);
+            Cursor cursor = db.rawQuery(sql,null);
             LogUtil.d("CityLab",sql);
-           list =  toCitysList(cursor);
+            list =  toCitysList(cursor);
 
             return list.size()>0?list:null;
 
@@ -144,6 +146,38 @@ public class CityLab {
         return null;
 
     }
+    //根据name查找城市
+    public Citys  searchCitysByName(String name){
+
+
+        String sql = "select *from "+ Schema.CityTable.TABLENAME +"where "+Schema.CityTable.CityColumn.NAME+"="+name;
+        List<Citys> list;
+
+        try{
+
+            db =  mSqlLiteHelp.getReadableDatabase();
+           Cursor cursor = db.rawQuery(sql,null);
+            LogUtil.d("CityLab",sql);
+           list =  toCitysList(cursor);
+
+           if(list.size() > 0){
+
+               return list.get(0);
+           }
+            return null;
+
+        }catch (Exception e){
+
+
+
+            close();
+
+        }
+
+        return null;
+
+    }
+    //进行分页显示
     public List<Citys> getLimitCitys(int offset,int num){
 
 
@@ -174,6 +208,7 @@ public class CityLab {
 
     }
 
+    //进行转换
     private List<Citys> toCitysList(Cursor cursor){
 
         List<Citys> cityses = new ArrayList<>();
