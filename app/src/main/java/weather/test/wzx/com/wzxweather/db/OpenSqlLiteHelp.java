@@ -21,8 +21,8 @@ public class OpenSqlLiteHelp  extends SQLiteOpenHelper {
     public static final String CITYSELECT="create table "+ Schema.CitySelect.TABLENAME+" ("+
 
              Schema.CitySelect.CityColumn.ID+" integer  primary key autoincrement,"+
-             Schema.CitySelect.CityColumn.ISSELECT+"integer default 0,"+
-             Schema.CitySelect.CityColumn.CITYID +" integer)";
+             Schema.CitySelect.CityColumn.ISSELECT+" integer default 0,"+
+             Schema.CitySelect.CityColumn.CITYID +" integer,"+Schema.CityTable.CityColumn.NAME + " text )";
 
     public OpenSqlLiteHelp(Context context, String dbName, SQLiteDatabase.CursorFactory factory,int version){
 

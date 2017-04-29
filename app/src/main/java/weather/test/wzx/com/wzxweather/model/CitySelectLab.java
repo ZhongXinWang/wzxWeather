@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import weather.test.wzx.com.wzxweather.db.OpenSqlLiteHelp;
-import weather.test.wzx.com.wzxweather.entity.Citys;
+import weather.test.wzx.com.wzxweather.entity.CitySelect;
 import weather.test.wzx.com.wzxweather.util.LogUtil;
 
 /**
@@ -33,47 +33,90 @@ public class CitySelectLab {
 
     //add
 
-    public void insertCity(Citys citys){
+    public boolean insertCity(CitySelect citys){
 
-        String sql = "insert into "+ Schema.CityTable.TABLENAME+" ("+ Schema.CityTable.CityColumn.NAME+") values (?)";
+        String sql = "insert into "+ Schema.CitySelect.TABLENAME+" ("+Schema.CitySelect.CityColumn.CITYID+","+ Schema.CityTable.CityColumn.NAME+","+Schema.CitySelect.CityColumn.ISSELECT+") values (?,?,?)";
 
         try{
 
+          db =  mSqlLiteHelp.getWritableDatabase();
 
-            db =  mSqlLiteHelp.getWritableDatabase();
+
+          db.execSQL(sql,new String[]{citys.getCityId()+"",citys.getCityName(),citys.getIsSelect()+""});
 
 
-          db.execSQL(sql,new String[]{citys.getCityName()});
-
+            LogUtil.d("CitySelectLab",sql);
+            return true;
 
         }catch (Exception e){
 
 
+            e.printStackTrace();
+            LogUtil.d("CitySelectLab",e.getMessage());
             close();
-            LogUtil.d("CityLab",e.getMessage());
+
+            return false;
+
         }
+
+
+    }
+
+    //检测是否已存在
+    public boolean isExistsCityId(int cityId){
+
+        //查询是否存在已选择字段
+        Cursor cursor = null;
+
+        try {
+
+            db =  mSqlLiteHelp.getWritableDatabase();
+             cursor = db.query(Schema.CitySelect.TABLENAME, null, Schema.CitySelect.CityColumn.CITYID + "=" + cityId, null, null, null, null);
+
+            LogUtil.d("isExistsCityId",cursor.toString());
+            if(cursor.moveToFirst()){
+
+                return true;
+
+            }
+        }catch (Exception e){
+
+            e.printStackTrace();
+            if(cursor != null) {
+
+                cursor.close();
+            }
+            close();
+            LogUtil.d("isExistsCityId","is exists");
+
+            return false;
+
+        }
+
+        return false;
+
 
     }
     //select
 
-    public List<Citys>  getAllCitys(){
+    public List<CitySelect>  getAllCitySelects(){
 
 
-        String sql = "select *from "+ Schema.CityTable.TABLENAME;
-        List<Citys> list;
+        String sql = "select *from "+ Schema.CitySelect.TABLENAME;
+        List<CitySelect> list;
 
         try{
 
             db =  mSqlLiteHelp.getReadableDatabase();
            Cursor cursor = db.rawQuery(sql,null);
-            LogUtil.d("CityLab",sql);
+
            list =  toCitysList(cursor);
 
             return list.size()>0?list:null;
 
         }catch (Exception e){
 
-
+            LogUtil.d("CitySelectLab",sql);
 
             close();
 
@@ -83,9 +126,9 @@ public class CitySelectLab {
 
     }
 
-    private List<Citys> toCitysList(Cursor cursor){
+    private List<CitySelect> toCitysList(Cursor cursor){
 
-        List<Citys> cityses = new ArrayList<>();
+        List<CitySelect> cityses = new ArrayList<>();
 
         if(cursor != null && cursor.getCount() > 0 ) {
             try {
@@ -93,9 +136,11 @@ public class CitySelectLab {
 
                 while (!cursor.isAfterLast()) {
 
-                    Citys citys = new Citys();
-                    citys.setId(cursor.getInt(cursor.getColumnIndex(Schema.CityTable.CityColumn.ID)));
+                    CitySelect citys = new CitySelect();
+                    citys.setId(cursor.getInt(cursor.getColumnIndex(Schema.CitySelect.CityColumn.ID)));
                     citys.setCityName(cursor.getString(cursor.getColumnIndex(Schema.CityTable.CityColumn.NAME)));
+                    citys.setCityId(cursor.getInt(cursor.getColumnIndex(Schema.CitySelect.CityColumn.CITYID)));
+                    citys.setIsSelect(cursor.getInt(cursor.getColumnIndex(Schema.CitySelect.CityColumn.ISSELECT)));
                     cityses.add(citys);
                     cursor.moveToNext();
                 }

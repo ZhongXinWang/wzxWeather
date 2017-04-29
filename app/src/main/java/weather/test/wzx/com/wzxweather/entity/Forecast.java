@@ -46,8 +46,14 @@ public class Forecast {
     public More more;
     public class More{
 
+        //详情
         @SerializedName("txt_d")
         public String info;
+
+        //图标
+        @SerializedName("code_d")
+
+        public String icon_d;
 
     }
 

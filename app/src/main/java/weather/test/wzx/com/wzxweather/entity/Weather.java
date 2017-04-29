@@ -25,4 +25,7 @@ public class Weather {
     @SerializedName("daily_forecast")
     public List<Forecast> forecasts;
 
+    //返回的状态 ok表示成功
+    public  String status;
+
 }

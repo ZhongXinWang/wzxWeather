@@ -9,6 +9,15 @@ public class CitySelect {
     private int mId;
     private int mCityId;
     private int mIsSelect;
+    private String cityName;
+
+    public String getCityName() {
+        return cityName;
+    }
+
+    public void setCityName(String cityName) {
+        this.cityName = cityName;
+    }
 
     public CitySelect(){
 

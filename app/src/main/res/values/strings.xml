@@ -7,4 +7,16 @@
     <string name="menu_share">分享</string>
     <string name="menu_set">设置</string>
     <string name="search">搜索城市</string>
+    <string name="quality">空气质量|</string>
+    <string name="aqi_num">空气质量指数AQI</string>
+    <string name="aqi_pm">首要污染物PM2.5</string>
+    <string name="suggest_comfort">舒适度建议</string>
+    <string name="suggest_flu">预防感冒建议</string>
+    <string name="suggest_car">洗车建议</string>
+    <string name="suggest_sport">运动建议</string>
+    <string name="yes">是</string>
+    <string name="no">否</string>
+    <string name="submit">提交</string>
+    <string name="success">操作成功</string>
+    <string name="fail">操作失败</string>
 </resources>

@@ -1,23 +1,24 @@
 package weather.test.wzx.com.wzxweather.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.widget.ImageView;
 
 import weather.test.wzx.com.wzxweather.R;
-import weather.test.wzx.com.wzxweather.bases.BaseActivity;
+import weather.test.wzx.com.wzxweather.bases.SingleBaseWeatherActivity;
 import weather.test.wzx.com.wzxweather.fragment.WeatherFragment;
-import weather.test.wzx.com.wzxweather.util.SelectDownPopuWindow;
 
 
-public class WeatherActivity extends BaseActivity {
+public class WeatherActivity extends SingleBaseWeatherActivity {
 
-    private ImageView mImageView;
-    private  SelectDownPopuWindow down;
+    private static String CITYNAME="cityName";
     @Override
     public Fragment createFragment() {
 
-        return WeatherFragment.newInstance();
+
+
+        return WeatherFragment.newInstance(getIntent().getStringExtra(CITYNAME));
     }
 
     @Override
@@ -26,19 +27,15 @@ public class WeatherActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
 
-        mImageView = (ImageView) findViewById(R.id.bg);
-
-
-
     }
 
+    public static void toAction(Context context,String cityName){
 
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+        Intent intent = new Intent(context,WeatherActivity.class);
+        intent.putExtra(CITYNAME,cityName);
+        context.startActivity(intent);
+
     }
-
-
 
 }

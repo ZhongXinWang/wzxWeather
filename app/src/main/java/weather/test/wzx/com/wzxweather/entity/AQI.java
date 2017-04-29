@@ -17,8 +17,12 @@ public class AQI {
 
     public class  AQICity{
 
+        //空气质量指数
         public String aqi;
+        //首要污染物
         public String pm25;
+        //质量
+        public String qult;
 
     }
 }
