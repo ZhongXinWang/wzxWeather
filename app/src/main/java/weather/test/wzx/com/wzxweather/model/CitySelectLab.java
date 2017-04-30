@@ -73,9 +73,10 @@ public class CitySelectLab {
             db =  mSqlLiteHelp.getWritableDatabase();
              cursor = db.query(Schema.CitySelect.TABLENAME, null, Schema.CitySelect.CityColumn.CITYID + "=" + cityId, null, null, null, null);
 
-            LogUtil.d("isExistsCityId",cursor.toString());
+
             if(cursor.moveToFirst()){
 
+                LogUtil.d("isExistsCityId",cursor.toString());
                 return true;
 
             }

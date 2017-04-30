@@ -145,7 +145,7 @@
                 android:id="@+id/city_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="今天"
+                android:text="后天"
                 />
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -154,7 +154,7 @@
                 android:paddingTop="5dp"
                 >
                 <TextView
-                    android:id="@+id/_fter_tomorrow_info_weather"
+                    android:id="@+id/after_tomorrow_info_weather"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="晴 | "

@@ -148,8 +148,7 @@ public class AddCityFragment extends Fragment {
 
                             //存在的话就弹出提示
 
-                            Toast.makeText(getActivity(),R.string.success,Toast.LENGTH_SHORT).show();
-
+                            Toast.makeText(getActivity(),R.string.is_exist,Toast.LENGTH_SHORT).show();
 
                         }
 

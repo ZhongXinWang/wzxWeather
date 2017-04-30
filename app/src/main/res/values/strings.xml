@@ -19,4 +19,5 @@
     <string name="submit">提交</string>
     <string name="success">操作成功</string>
     <string name="fail">操作失败</string>
+    <string name="is_exist">已经存在,请重新添加</string>
 </resources>

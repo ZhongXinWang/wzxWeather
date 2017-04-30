@@ -12,6 +12,7 @@ import weather.test.wzx.com.wzxweather.fragment.WeatherFragment;
 
 public class WeatherActivity extends SingleBaseWeatherActivity {
 
+    private long startTime;
     private static String CITYNAME="cityName";
     @Override
     public Fragment createFragment() {

@@ -19,6 +19,8 @@
         </activity>
         <activity android:name=".activity.AddCityActivity">
         </activity>
+        <activity android:name=".activity.ShowSelectActivity" android:theme="@style/AppThemeActionBar">
+        </activity>
     </application>
 
 </manifest>

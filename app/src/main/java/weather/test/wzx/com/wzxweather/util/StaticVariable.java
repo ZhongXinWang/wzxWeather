@@ -14,6 +14,7 @@ public class StaticVariable {
     //缓存天气情况的文件名
     public static  String WEATHERDATA="weatherData";
 
-
+   //天气图标
+    public static String ICON = "https://cdn.heweather.com/cond_icon/";
 
 }

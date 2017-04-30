@@ -17,8 +17,10 @@ public class Weather {
 
     public Basic basic;
 
+    @SerializedName("now")
     public Now now;
 
+    @SerializedName("suggestion")
     public Suggestion suggestion;
 
     //daily_forecast里面有多组数,所以要用集合来创建

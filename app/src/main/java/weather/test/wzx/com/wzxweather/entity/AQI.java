@@ -1,5 +1,7 @@
 package weather.test.wzx.com.wzxweather.entity;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by 王钟鑫 on 17/4/27.
  *
@@ -22,6 +24,7 @@ public class AQI {
         //首要污染物
         public String pm25;
         //质量
+        @SerializedName("qlty")
         public String qult;
 
     }

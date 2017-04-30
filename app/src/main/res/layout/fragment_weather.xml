@@ -12,17 +12,19 @@
              tools:context="weather.test.wzx.com.wzxweather.fragment.WeatherFragment">
 
 
-    <include layout="@layout/activity_weather_head" android:layout_height="240dp" android:layout_width="match_parent"/>
-    <include layout="@layout/activity_weather_forecast"
+    <include layout="@layout/fragment_weather_head" android:layout_height="240dp" android:layout_width="match_parent"/>
+    <include layout="@layout/fragment_weather_forecast"
              android:layout_width="match_parent"
              android:layout_height="wrap_content"
+             android:id="@+id/forecast"
              android:layout_below="@id/head"/>
-    <include layout="@layout/activity_weather_aqi" android:layout_height="wrap_content"
+    <include layout="@layout/fragment_weather_aqi" android:layout_height="wrap_content"
              android:layout_width="match_parent"
              android:layout_below="@id/forecast"
              android:layout_marginTop="@dimen/margin_top"
+             android:id="@+id/aqi"
         />
-    <include layout="@layout/activity_weather_suggest" android:layout_height="wrap_content"
+    <include layout="@layout/fragment_weather_suggest" android:layout_height="wrap_content"
              android:layout_width="match_parent"
              android:layout_below="@id/aqi"
              android:layout_marginTop="@dimen/margin_top"
