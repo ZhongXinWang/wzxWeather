@@ -5,6 +5,7 @@
                 android:layout_height="match_parent"
              tools:context="weather.test.wzx.com.wzxweather.fragment.AddCityFragment">
 
+
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -12,38 +13,38 @@
         android:id="@+id/head"
         android:background="@color/colorhui"
         android:paddingRight="@dimen/activity_horizontal_margin"
-        >
-
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
         <ImageView
             android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/back"
             android:layout_weight="1"
             android:gravity="center"
+            android:layout_gravity="center"
             android:src="@drawable/previous"
-            android:scaleType="fitCenter"/>
+            android:scaleType="fitCenter"
+            />
         <android.support.v7.widget.SearchView
-            android:layout_marginTop="5dp"
             android:id="@+id/search"
             android:layout_width="0dp"
-            android:layout_weight="3"
+            android:layout_weight="4"
             android:gravity="center"
+            android:layout_gravity="center"
             android:queryHint="@string/search"
             android:background="@drawable/edit_bg"
-            android:layout_height="wrap_content">
-
+            android:layout_height="40dp">
         </android.support.v7.widget.SearchView>
-
     </LinearLayout>
+
     <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/swipe_refresh"
         android:layout_below="@id/head"
-
         >
         <ListView
-
             android:id="@+id/city_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -51,5 +52,4 @@
             >
         </ListView>
     </android.support.v4.widget.SwipeRefreshLayout>
-
 </RelativeLayout>

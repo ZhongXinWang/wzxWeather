@@ -1,9 +1,11 @@
 package weather.test.wzx.com.wzxweather.fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -28,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 import weather.test.wzx.com.wzxweather.R;
+import weather.test.wzx.com.wzxweather.activity.SetingActivity;
 import weather.test.wzx.com.wzxweather.activity.ShowSelectActivity;
 import weather.test.wzx.com.wzxweather.entity.CitySelect;
 import weather.test.wzx.com.wzxweather.entity.Citys;
@@ -36,13 +39,14 @@ import weather.test.wzx.com.wzxweather.entity.Weather;
 import weather.test.wzx.com.wzxweather.interfaces.HttpCallBackListener;
 import weather.test.wzx.com.wzxweather.model.CityLab;
 import weather.test.wzx.com.wzxweather.model.CitySelectLab;
-import weather.test.wzx.com.wzxweather.util.ActivityQuenu;
+import weather.test.wzx.com.wzxweather.services.AutoUpdateService;
 import weather.test.wzx.com.wzxweather.util.HttpConnection;
 import weather.test.wzx.com.wzxweather.util.JSONUtil;
 import weather.test.wzx.com.wzxweather.util.LogUtil;
 import weather.test.wzx.com.wzxweather.util.SharedPreferencesUtil;
 import weather.test.wzx.com.wzxweather.util.StaticVariable;
 
+import static weather.test.wzx.com.wzxweather.R.id.bg;
 import static weather.test.wzx.com.wzxweather.R.id.info_weather;
 import static weather.test.wzx.com.wzxweather.R.id.now_info_weather;
 import static weather.test.wzx.com.wzxweather.R.id.now_quality;
@@ -65,8 +69,6 @@ public class WeatherFragment extends Fragment {
     //从缓存数据里取出来的值
     private String weatherData;
 
-    //控件
-
     //head控件
     private ImageView mHeadBg;
     private Toolbar  mToolbar;
@@ -80,21 +82,18 @@ public class WeatherFragment extends Fragment {
 
     //未来三天的天气信息
     private LinearLayout mForecast_container;
-
     //aqi
-
     private TextView mAQIQuality;
     private TextView mAQI;
     private TextView mPM;
     //suggest
-
     private TextView mSuggest_Car,mSuggest_Sport,mSuggest_Comfort,mSuggest_Flu;
+    private SwipeRefreshLayout mRefreshLayout;
     public WeatherFragment() {
         // Required empty public constructor
     }
     //跳转
     public static WeatherFragment newInstance(String str) {
-
         Bundle args = new Bundle();
         args.putString(CITYNAME,str);
         WeatherFragment fragment = new WeatherFragment();
@@ -111,16 +110,19 @@ public class WeatherFragment extends Fragment {
         mCityName = (String) getArguments().get(CITYNAME);
         //mCityName  如果为空,表示不是从添加界面过来的,就需要从数据库去查找默认的城市
         if(mCityName == null){
-
             List<CitySelect> citySelect = mCitySelect.getAllCitySelects();
-            mCityName = citySelect.get(0).getCityName();
-
+            if(citySelect == null) {
+                //如果没有选择项就默认使用三元这个地区
+                mCityName = "三元";
+            }else{
+                //获取默认项
+                mCityName = citySelect.get(0).getCityName();
+            }
         }
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         mView = inflater.inflate(R.layout.fragment_weather, container, false);
         //设置fragement的菜单可用
         setHasOptionsMenu(true);
@@ -131,29 +133,92 @@ public class WeatherFragment extends Fragment {
         //表示本地没有缓存,从服务器去获取
         if(weatherData.equals("")){
 
-
             requestDataFromServer();
 
         }else{
-
+            LogUtil.d("WeatherData",weatherData);
             //有缓存就直接把数据解析出来,并显示
-
-
             Weather weather =  handleWeatherResponse(weatherData);
-
             showWeatherData(weather);
-
         }
         return  mView;
     }
     //初始化参数
     private void init() {
-
+        //初始化头布局
         initHead();
+        //初始化主体的布局
         initBody();
+        //初始化刷新
+        initRefresh();
+        //初始化背景图片
+        initBg();
+    }
+    private void initBg() {
+        mHeadBg = (ImageView) mView.findViewById(bg);
+        String bgURL = share.readSharePreference("bg");
+        LogUtil.d("bgURL",bgURL);
+        if(!bgURL.equals("")){
+            Glide.with(getActivity()).load(bgURL).asBitmap().centerCrop().into(mHeadBg);
+
+        }else{
+            loadBg();
+        }
     }
 
+    private void loadBg(){
+        HttpConnection.httpConnHelp(StaticVariable.BGURL, new HttpCallBackListener() {
+            @Override
+            public void onSuccess(InputStream inputStream) {
 
+                try {
+
+                    final  String url =  HttpConnection.inputStreamToString(inputStream).toString();
+                    LogUtil.d("URLS",url);
+                    //把地址缓存起来
+                    Map<String,String> m = new HashMap<String, String>();
+                    m.put("bg",url);
+                    share.insertSharePreference(m);
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            Glide.with(getActivity()).load(url).asBitmap().centerCrop().into(mHeadBg);
+
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+            @Override
+            public void onFailour(Exception e) {
+
+                LogUtil.d("BGError",e.getMessage());
+            }
+        });
+    }
+    private void initRefresh() {
+        mRefreshLayout = (SwipeRefreshLayout) mView.findViewById(R.id.swipe_refresh);
+        mRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
+        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+                long time =  Long.parseLong(share.readSharePreference(mCityName+"time"));
+                LogUtil.d("time",time+"");
+                long currentTime = System.currentTimeMillis();
+                if(currentTime - time < StaticVariable.DISTANT) {
+                    Toast.makeText(getActivity(),"当前已是最新的数据了",Toast.LENGTH_SHORT).show();
+                    mRefreshLayout.setRefreshing(false);
+                }else {
+
+                    requestDataFromServer();
+                }
+            }
+        });
+    }
     //初始化头部控件
     private void initHead() {
 
@@ -161,8 +226,6 @@ public class WeatherFragment extends Fragment {
         mToolbar.setTitle("");
         ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
         // https://free-api.heweather.com/v5/weather?city=漳州&key=404f2c3e24764f65baf1067846123098
-        mHeadBg = (ImageView) mView.findViewById(R.id.bg);
-        Glide.with(this).load("http://cn.bing.com/az/hprichbg/rb/GlacierBay_ZH-CN14440689690_1920x1080.jpg").asBitmap().centerCrop().into(mHeadBg);
 
         mHeadTemp = (TextView) mView.findViewById(R.id.head_temp);
         mHeadCityName = (TextView) mView.findViewById(R.id.city_name);
@@ -175,10 +238,7 @@ public class WeatherFragment extends Fragment {
     }
     private void initBody() {
         mForecast_container = (LinearLayout) mView.findViewById(R.id.forecast_container);
-
-
         //aqi
-
         mAQI = (TextView) mView.findViewById(R.id.aqi_num);
         mAQIQuality = (TextView) mView.findViewById(R.id.aqi_quality);
         mPM = (TextView) mView.findViewById(R.id.aqi_pm);
@@ -186,29 +246,22 @@ public class WeatherFragment extends Fragment {
         //suggest
 
         mSuggest_Car = (TextView) mView.findViewById(R.id.suggest_car);
-        mSuggest_Comfort = (TextView) mView.findViewById(R.id.suggest_car);
+        mSuggest_Comfort = (TextView) mView.findViewById(R.id.suggest_comfort);
         mSuggest_Sport = (TextView) mView.findViewById(R.id.suggest_sport);
         mSuggest_Flu = (TextView) mView.findViewById(R.id.suggest_flu);
 
     }
-
     //请求数据
     private void requestDataFromServer() {
 
-       String url = "https://free-api.heweather.com/v5/weather?city="+mCityName+"&key=404f2c3e24764f65baf1067846123098";
-
+        String url = "https://free-api.heweather.com/v5/weather?city="+mCityName+"&key=404f2c3e24764f65baf1067846123098";
         LogUtil.d("URL",url);
-
         HttpConnection.httpConnHelp(url, new HttpCallBackListener() {
             @Override
             public void onSuccess(InputStream inputStream) {
                 try {
-
-
                     final StringBuilder stringBuilder =  HttpConnection.inputStreamToString(inputStream);
                     final Weather weather = JSONUtil.handleWeatherResponse(stringBuilder.toString());
-
-
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -219,20 +272,24 @@ public class WeatherFragment extends Fragment {
 
                                 Map<String,String> m = new HashMap<String, String>();
                                 m.put(mCityName,stringBuilder.toString());
+                                //设置一个时间，防止频繁刷新,1小时后才可手动刷新
+                                m.put(mCityName+"time",System.currentTimeMillis()+"");
                                 share.insertSharePreference(m);
                                 //显示数据
                                 showWeatherData(weather);
+                                //启动服务
+                                if(!share.readSharePreference(StaticVariable.IS_AUTO_UPDATE).equals("") && share.readSharePreference(StaticVariable.IS_AUTO_UPDATE).equals("1")){
 
+                                    Intent intent = new Intent(getActivity(), AutoUpdateService.class);
+                                    getActivity().startService(intent);
+                                }
                             }else{
 
-
                                 Toast.makeText(getActivity(),"获取天气失败",Toast.LENGTH_SHORT).show();
-
                             }
+                            mRefreshLayout.setRefreshing(false);
                         }
                     });
-
-
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -242,12 +299,12 @@ public class WeatherFragment extends Fragment {
             public void onFailour(Exception e) {
 
                 LogUtil.d("weather","request weather fail");
+                mRefreshLayout.setRefreshing(false);
             }
         });
     }
     //显示数据
     private void showWeatherData(Weather weather){
-
         //设置头的数据信息
         mHeadTemp.setText(weather.now.temperature+"℃");
         mHeadCityName.setText(weather.basic.cityName.toString()+" | ");
@@ -256,15 +313,12 @@ public class WeatherFragment extends Fragment {
         mHeadWindStr.setText(weather.now.wind.dengji.toString());
         mHeadRelativeSize.setText(weather.now.relativeTemp.toString()+"℃");
         mHeadBodySize.setText(weather.now.bodyTemp.toString()+"℃");
-
         //设置主体信息
-
         //设置未来三天的信息
         //移除所有的里面所有的view
         mForecast_container.removeAllViews();
         //重新添加
         for (Forecast forecast:weather.forecasts){
-
             View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_weather_forecast_item,mForecast_container,false);
             ImageView icon = (ImageView) view.findViewById(R.id.icon_now);
             TextView dates= (TextView) view.findViewById(R.id.forecast_date);
@@ -278,17 +332,15 @@ public class WeatherFragment extends Fragment {
             temp.setText(forecast.temperature.max+"/"+forecast.temperature.min+"℃");
             mForecast_container.addView(view);
         }
-
         if(weather.aqi != null){
-
             mAQI.setText(weather.aqi.city.aqi);
             mAQIQuality.setText(weather.aqi.city.qult);
             mPM.setText(weather.aqi.city.pm25);
-
         }
         mSuggest_Car.setText(weather.suggestion.cardWash.info);
         mSuggest_Comfort.setText(weather.suggestion.comfort.info);
         mSuggest_Sport.setText(weather.suggestion.sport.info);
+        mSuggest_Flu.setText(weather.suggestion.flu.info);
     }
 
     //当在载入activity的时候触发
@@ -301,12 +353,9 @@ public class WeatherFragment extends Fragment {
 
     //获取所有的城市
     private void queryCitys() {
-
-
         List<Citys> lists = mCityLab.getAllCitys();
         //表示还没有省份的数据,就去服务器上面加载数据
         if(lists == null){
-
 
             queryCitysFromService();
 
@@ -315,15 +364,10 @@ public class WeatherFragment extends Fragment {
     }
     //从服务器上面获取
     private void queryCitysFromService() {
-
-
         //调用自己写的httpurl
-
         HttpConnection.httpConnHelp(StaticVariable.CITYURL, new HttpCallBackListener() {
             @Override
             public void onSuccess(InputStream str) {
-
-
                 try {
 
                     List<Citys> cityses = JSONUtil.JsonToCity(HttpConnection.inputStreamToString(str).toString());
@@ -366,13 +410,11 @@ public class WeatherFragment extends Fragment {
 
             //添加菜单的事件响应
             case  R.id.adds:
-
                 ShowSelectActivity.startAction(getActivity());
-
                 break;
             //设置事件响应
             case  R.id.sets:
-
+                SetingActivity.startAction(getActivity());
                 break;
             //分享事件响应
             case R.id.share:

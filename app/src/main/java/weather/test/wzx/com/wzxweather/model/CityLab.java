@@ -137,8 +137,6 @@ public class CityLab {
 
         }catch (Exception e){
 
-
-
             close();
 
         }
@@ -149,12 +147,9 @@ public class CityLab {
     //根据name查找城市
     public Citys  searchCitysByName(String name){
 
-
         String sql = "select *from "+ Schema.CityTable.TABLENAME +"where "+Schema.CityTable.CityColumn.NAME+"="+name;
         List<Citys> list;
-
         try{
-
             db =  mSqlLiteHelp.getReadableDatabase();
            Cursor cursor = db.rawQuery(sql,null);
             LogUtil.d("CityLab",sql);

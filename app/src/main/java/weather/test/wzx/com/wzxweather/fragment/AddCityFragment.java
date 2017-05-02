@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -33,14 +34,14 @@ public class AddCityFragment extends Fragment {
 
     private SearchView mSearchView;
     private ListView mListView;
+    private ImageView mImageView;
     private CityLab mCity;
     private CitySelectLab mCitySelectLab;
     private ArrayAdapter<Citys> mAdapter;
     private List<Citys> mList = null;
     private SwipeRefreshLayout mSwipe_Refresh;
-
     private int offset = 0;
-    private int num  = 20;
+    private int num  = 10;
     private View mView;
 
     public AddCityFragment() {
@@ -50,7 +51,6 @@ public class AddCityFragment extends Fragment {
     public static AddCityFragment newInstance() {
         
         Bundle args = new Bundle();
-        
         AddCityFragment fragment = new AddCityFragment();
         fragment.setArguments(args);
         return fragment;
@@ -59,13 +59,9 @@ public class AddCityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-
         mView = inflater.inflate(R.layout.fragment_add_city, container, false);
-
         return mView;
-        
     }
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 
@@ -81,9 +77,8 @@ public class AddCityFragment extends Fragment {
 
         mSearchView = (SearchView) mView.findViewById(R.id.search);
         mListView = (ListView) mView.findViewById(R.id.city_list);
-
+        mImageView = (ImageView) mView.findViewById(R.id.back);
         mListView.setTextFilterEnabled(true);
-
         mCity = new CityLab(getActivity());
         mCitySelectLab = new CitySelectLab(getActivity());
         mSwipe_Refresh = (SwipeRefreshLayout) mView.findViewById(R.id.swipe_refresh);
@@ -99,16 +94,11 @@ public class AddCityFragment extends Fragment {
     }
 
     private void initListEvent() {
-
-
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
                 final Citys citys = mAdapter.getItem(i);
-
-                //
-
                 AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
 
                 build.setTitle("操作提示")
@@ -117,8 +107,6 @@ public class AddCityFragment extends Fragment {
                 build.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-
-
                         //判断改地区是否已经在列表中了,如果在就不插入,弹出提示,不在就插入,以id来判断
 
                         if(!mCitySelectLab.isExistsCityId(citys.getId())){
@@ -132,16 +120,13 @@ public class AddCityFragment extends Fragment {
                            boolean flag =  mCitySelectLab.insertCity(select);
 
                             if(flag){
-
                                 WeatherActivity.toAction(getActivity(),citys.getCityName());
                                 //结束当前的activity
                                 getActivity().finish();
 
-
                             }else{
 
                                 Toast.makeText(getActivity(),R.string.fail,Toast.LENGTH_SHORT).show();
-
                             }
 
                         }else{
@@ -151,7 +136,6 @@ public class AddCityFragment extends Fragment {
                             Toast.makeText(getActivity(),R.string.is_exist,Toast.LENGTH_SHORT).show();
 
                         }
-
                         dialogInterface.dismiss();
 
                     }
@@ -165,9 +149,15 @@ public class AddCityFragment extends Fragment {
 
                     }
                 });
-
-
                 build.create().show();
+            }
+        });
+
+        mImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                getActivity().finish();
 
             }
         });
@@ -181,27 +171,25 @@ public class AddCityFragment extends Fragment {
             @Override
             public boolean onQueryTextSubmit(String query) {
 
-                Toast.makeText(getActivity(),"Text",Toast.LENGTH_SHORT).show();
-
-
+                Toast.makeText(getActivity(),"请点击选项",Toast.LENGTH_SHORT).show();
                 return false;
             }
-
             @Override
             public boolean onQueryTextChange(String newText) {
 
-
+                //当点击搜索框的时候，把所有的数据都读出来
+                mAdapter.notifyDataSetChanged();
+                initList(mCity.getAllCitys());
                 if(!TextUtils.isEmpty(newText)){
 
                     mListView.setFilterText(newText);
 
-
                 }else{
 
                     mListView.clearTextFilter();
-
+                    mAdapter.notifyDataSetChanged();
+                    initList(initListData(offset,num));
                 }
-
                 return false;
             }
         });
@@ -223,62 +211,46 @@ public class AddCityFragment extends Fragment {
         });
 
     }
-
     //获取查询数据
 
     private List<Citys> initListData(int offset,int num) {
 
         //offset 表示偏移量,到哪里开始取
         List<Citys> citys = mCity.getLimitCitys(offset,num);
-
         return citys;
-
     }
     private void  initList(List<Citys> citys){
 
-
         if(citys != null){
 
-
             mList = citys;
-
             mAdapter = new ArrayAdapter<Citys>(getActivity(),android.R.layout.simple_expandable_list_item_1,citys);
             mListView.setAdapter(mAdapter);
 
-
         }else{
 
-
-            Toast.makeText(getActivity(),"没有数据",Toast.LENGTH_SHORT).show();
-
+            Toast.makeText(getActivity(),"没有数据更新",Toast.LENGTH_SHORT).show();
 
         }
 
     }
-
     private void refrestCitys() {
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-
                 //获取列表的最大id
-
                 offset = mList.get(mList.size()-1).getId();
                 final List<Citys> lists = initListData(offset,num);
-
                 //返回主线程
-
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-
                         initList(lists);
                         mAdapter.notifyDataSetChanged();
                         mSwipe_Refresh.setRefreshing(false);
                     }
                 });
-
 
             }
 

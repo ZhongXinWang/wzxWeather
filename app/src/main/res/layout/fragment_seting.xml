@@ -1,0 +1,23 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context="weather.test.wzx.com.wzxweather.fragment.SetingFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:showDividers="end"
+        android:divider="@drawable/divide"
+        >
+        <Switch
+            android:padding="@dimen/padding_size"
+            android:id="@+id/update_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/set_auto_update"
+            />
+    </LinearLayout>
+
+</FrameLayout>

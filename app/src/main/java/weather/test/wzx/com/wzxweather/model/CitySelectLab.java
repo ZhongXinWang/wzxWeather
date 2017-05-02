@@ -103,7 +103,7 @@ public class CitySelectLab {
     public List<CitySelect>  getAllCitySelects(){
 
 
-        String sql = "select *from "+ Schema.CitySelect.TABLENAME;
+        String sql = "select *from "+ Schema.CitySelect.TABLENAME +" order by "+Schema.CitySelect.CityColumn.ISSELECT +" desc";
         List<CitySelect> list;
 
         try{
@@ -118,9 +118,7 @@ public class CitySelectLab {
         }catch (Exception e){
 
             LogUtil.d("CitySelectLab",sql);
-
             close();
-
         }
 
         return null;
@@ -153,6 +151,40 @@ public class CitySelectLab {
         }
         return cityses;
 
+    }
+    public boolean deleteById(int id){
+
+        try {
+
+            db = mSqlLiteHelp.getWritableDatabase();
+            int flag = db.delete(Schema.CitySelect.TABLENAME,Schema.CitySelect.CityColumn.ID+"="+id,null);
+            LogUtil.d("delete",flag+"");
+            if(flag > 0){
+
+                return true;
+            }
+
+        }catch (Exception e){
+
+            LogUtil.d("CitySelectLab","delete");
+        }
+        return false;
+    }
+    public boolean updateById(int id){
+
+        try {
+
+            db = mSqlLiteHelp.getWritableDatabase();
+            db.execSQL("update "+Schema.CitySelect.TABLENAME+" set "+Schema.CitySelect.CityColumn.ISSELECT+"=0");
+            db.execSQL("update "+Schema.CitySelect.TABLENAME+" set "+Schema.CitySelect.CityColumn.ISSELECT+"=1 where "+Schema.CitySelect.CityColumn.ID+"="+id);
+
+            return true;
+
+        }catch (Exception e){
+
+            LogUtil.d("CitySelectLab","delete");
+        }
+        return false;
     }
 
     public void close(){

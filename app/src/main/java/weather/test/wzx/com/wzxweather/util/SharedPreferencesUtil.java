@@ -54,13 +54,9 @@ public class SharedPreferencesUtil {
 
     public String  readSharePreference(String key){
 
-
         SharedPreferences sharePreface = mContext.getSharedPreferences(StaticVariable.WEATHERDATA,Context.MODE_PRIVATE);
-
         String str = sharePreface.getString(key,"");
-
         return str;
-
     }
 
 }

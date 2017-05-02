@@ -16,5 +16,14 @@ public class StaticVariable {
 
    //天气图标
     public static String ICON = "https://cdn.heweather.com/cond_icon/";
+    //设置手动刷新的时间
+    public static int DISTANT=1*60*60*1000;
+   //背景图片的地址
+    public static String BGURL="http://guolin.tech/api/bing_pic";
 
+
+    //保存的字段
+    public static String IS_AUTO_UPDATE= "is_auto_update";
+    //服务更新的时间,一天
+    public static int TIME=24*60*60*1000;
 }

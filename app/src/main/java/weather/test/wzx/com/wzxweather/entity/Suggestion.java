@@ -27,14 +27,11 @@ public class Suggestion {
         public String info;
 
     }
-
     @SerializedName("cw")
     public CardWash cardWash;
     public class  CardWash{
-
         @SerializedName("txt")
         public String info;
-
     }
 
     @SerializedName("sport")
@@ -43,17 +40,13 @@ public class Suggestion {
 
         @SerializedName("txt")
         public String info;
-
     }
     @SerializedName("flu")
-    public Fluen fluen;
-    public class  Fluen{
-
+    public Fluen flu;
+    public class  Fluen {
         @SerializedName("txt")
         public String info;
-
     }
-
 
 
 }

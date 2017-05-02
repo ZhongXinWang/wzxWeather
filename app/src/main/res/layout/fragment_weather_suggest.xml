@@ -32,9 +32,16 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="match_parent"
+        <ImageView
             android:layout_height="wrap_content"
+            android:src="@drawable/comfort"
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:scaleType="fitStart"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
             android:textSize="@dimen/content_size"
             android:id="@+id/suggest_comfort"
             android:text="舒适度建议的主要内容在这里噢噢噢噢噢噢噢噢"
@@ -68,8 +75,15 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+        <ImageView
+            android:layout_height="wrap_content"
+            android:src="@drawable/flu"
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:scaleType="fitStart"/>
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="2"
             android:layout_height="wrap_content"
             android:textSize="@dimen/content_size"
             android:id="@+id/suggest_flu"
@@ -93,6 +107,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="@dimen/margin_top"
         android:layout_height="wrap_content">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -104,8 +119,15 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+        <ImageView
+            android:layout_height="wrap_content"
+            android:src="@drawable/car"
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:scaleType="fitStart"/>
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="2"
             android:layout_height="wrap_content"
             android:textSize="@dimen/content_size"
             android:id="@+id/suggest_car"
@@ -115,7 +137,6 @@
         </LinearLayout>
 
     <!--运动建议-->
-
     <LinearLayout
         android:background="@color/colorWhite"
         android:orientation="vertical"
@@ -141,8 +162,15 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+        <ImageView
+            android:layout_height="wrap_content"
+            android:src="@drawable/sport"
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:scaleType="fitStart"/>
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="2"
             android:layout_height="wrap_content"
             android:textSize="@dimen/content_size"
             android:id="@+id/suggest_sport"
@@ -150,5 +178,16 @@
             />
     </LinearLayout>
         </LinearLayout>
-
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/source"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:textColor="@color/colorWhite"
+        android:background="@color/colorPrimary"
+        android:textSize="@dimen/normal_size"
+        android:layout_marginTop="@dimen/margin_top"
+        android:padding="@dimen/padding_size"
+        />
 </LinearLayout>

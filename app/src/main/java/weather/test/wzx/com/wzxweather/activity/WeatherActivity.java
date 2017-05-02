@@ -4,15 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.widget.Toast;
 
 import weather.test.wzx.com.wzxweather.R;
 import weather.test.wzx.com.wzxweather.bases.SingleBaseWeatherActivity;
 import weather.test.wzx.com.wzxweather.fragment.WeatherFragment;
+import weather.test.wzx.com.wzxweather.util.ActivityQuenu;
 
 
 public class WeatherActivity extends SingleBaseWeatherActivity {
 
-    private long startTime;
     private static String CITYNAME="cityName";
     @Override
     public Fragment createFragment() {
@@ -38,5 +39,28 @@ public class WeatherActivity extends SingleBaseWeatherActivity {
         context.startActivity(intent);
 
     }
+    long startTime;
+    @Override
+    public void onBackPressed() {
+        long endTime = 0;
+        if(startTime == 0){
 
+            startTime = System.currentTimeMillis();
+
+        }else{
+            endTime = System.currentTimeMillis();
+        }
+        if(startTime != 0 && endTime == 0){
+
+            Toast.makeText(this,"再按一次退出程序",Toast.LENGTH_SHORT).show();
+
+        }else if(endTime != 0 && (endTime - startTime < 10000)){
+
+            ActivityQuenu.finishAll();
+
+        }else{
+            startTime = 0;
+            endTime = 0;
+        }
+    }
 }

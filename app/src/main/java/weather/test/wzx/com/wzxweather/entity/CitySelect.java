@@ -46,4 +46,9 @@ public class CitySelect {
     public void setIsSelect(int isSelect) {
         mIsSelect = isSelect;
     }
+
+    public String toString(){
+
+        return getCityName();
+    }
 }
