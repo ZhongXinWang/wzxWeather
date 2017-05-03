@@ -30,7 +30,7 @@ public class JSONUtil {
         for(int i = 0 ; i < jsonArray.length();i++){
 
             JSONObject object = jsonArray.getJSONObject(i);
-            stringCity.append(object.get("cityZh")+",");
+            stringCity.append(object.get("cityZh")+"    （"+object.get("provinceZh")+"/"+object.get("leaderZh")+")"+",");
         }
 
         Log.d("JsonObject",json.toString());

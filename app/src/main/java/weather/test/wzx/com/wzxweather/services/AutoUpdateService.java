@@ -30,26 +30,32 @@ public class AutoUpdateService extends Service {
     private CitySelectLab mCitySelectLab;
     private  String mCityName = "三元";
     public AutoUpdateService() {
+
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
         share = new SharedPreferencesUtil(AutoUpdateService.this);
         mCitySelectLab = new CitySelectLab(AutoUpdateService.this);
+        LogUtil.d("MyServices","service create");
     }
 
     //主要的方法设置再这里
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
         loadBg();
         requestDataFromServer();
         //设置定时器
         AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-        long triggerAtTime = SystemClock.elapsedRealtime()+60*1000;
+        long triggerAtTime = SystemClock.elapsedRealtime()+StaticVariable.TIME;
         Intent i = new Intent(this,AutoUpdateService.class);
-        PendingIntent pi = PendingIntent.getActivity(this,0,i,0);
+        PendingIntent pi = PendingIntent.getService(this,0,i,0);
         alarmManager.cancel(pi);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,triggerAtTime,pi);
+        LogUtil.d("MyServices","service start");
         return super.onStartCommand(intent, flags, startId);
     }
-
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -57,7 +63,6 @@ public class AutoUpdateService extends Service {
     }
     //请求数据
     private void requestDataFromServer() {
-
 
         List<CitySelect> citySelect = mCitySelectLab.getAllCitySelects();
         if(citySelect != null) {
@@ -93,11 +98,12 @@ public class AutoUpdateService extends Service {
         });
     }
     private void loadBg(){
+        LogUtil.d("Picture","picture");
         HttpConnection.httpConnHelp(StaticVariable.BGURL, new HttpCallBackListener() {
             @Override
             public void onSuccess(InputStream inputStream) {
-                try {
-                    final  String url =  HttpConnection.inputStreamToString(inputStream).toString();
+               try {
+                  final  String url =  HttpConnection.inputStreamToString(inputStream).toString();
                     LogUtil.d("URLS",url);
                     //把地址缓存起来
                     Map<String,String> m = new HashMap<String, String>();

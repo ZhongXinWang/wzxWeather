@@ -14,8 +14,7 @@ public class LogUtil{
     public static final int ERROT = 4;
     public static final int WRAN = 5;
     public static final int NOTHING = 6;
-    public static final int level = VERBOSE;
-
+    public static final int level = 7;
 
     public static void v(String tag,String msg){
 

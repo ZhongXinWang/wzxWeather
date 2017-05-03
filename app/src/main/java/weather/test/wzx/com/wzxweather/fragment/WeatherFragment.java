@@ -83,6 +83,7 @@ public class WeatherFragment extends Fragment {
     //未来三天的天气信息
     private LinearLayout mForecast_container;
     //aqi
+    private LinearLayout line;
     private TextView mAQIQuality;
     private TextView mAQI;
     private TextView mPM;
@@ -153,26 +154,30 @@ public class WeatherFragment extends Fragment {
         initRefresh();
         //初始化背景图片
         initBg();
+        //启动服务
+        if(!share.readSharePreference(StaticVariable.IS_AUTO_UPDATE).equals("") && share.readSharePreference(StaticVariable.IS_AUTO_UPDATE).equals("1")){
+
+            Intent intent = new Intent(getActivity(), AutoUpdateService.class);
+            getActivity().startService(intent);
+        }
     }
     private void initBg() {
         mHeadBg = (ImageView) mView.findViewById(bg);
         String bgURL = share.readSharePreference("bg");
         LogUtil.d("bgURL",bgURL);
         if(!bgURL.equals("")){
+
             Glide.with(getActivity()).load(bgURL).asBitmap().centerCrop().into(mHeadBg);
 
         }else{
             loadBg();
         }
     }
-
     private void loadBg(){
         HttpConnection.httpConnHelp(StaticVariable.BGURL, new HttpCallBackListener() {
             @Override
             public void onSuccess(InputStream inputStream) {
-
                 try {
-
                     final  String url =  HttpConnection.inputStreamToString(inputStream).toString();
                     LogUtil.d("URLS",url);
                     //把地址缓存起来
@@ -214,7 +219,9 @@ public class WeatherFragment extends Fragment {
                     mRefreshLayout.setRefreshing(false);
                 }else {
 
+                    initBg();
                     requestDataFromServer();
+
                 }
             }
         });
@@ -239,6 +246,7 @@ public class WeatherFragment extends Fragment {
     private void initBody() {
         mForecast_container = (LinearLayout) mView.findViewById(R.id.forecast_container);
         //aqi
+        line = (LinearLayout) mView.findViewById(R.id.aqi);
         mAQI = (TextView) mView.findViewById(R.id.aqi_num);
         mAQIQuality = (TextView) mView.findViewById(R.id.aqi_quality);
         mPM = (TextView) mView.findViewById(R.id.aqi_pm);
@@ -278,11 +286,7 @@ public class WeatherFragment extends Fragment {
                                 //显示数据
                                 showWeatherData(weather);
                                 //启动服务
-                                if(!share.readSharePreference(StaticVariable.IS_AUTO_UPDATE).equals("") && share.readSharePreference(StaticVariable.IS_AUTO_UPDATE).equals("1")){
 
-                                    Intent intent = new Intent(getActivity(), AutoUpdateService.class);
-                                    getActivity().startService(intent);
-                                }
                             }else{
 
                                 Toast.makeText(getActivity(),"获取天气失败",Toast.LENGTH_SHORT).show();
@@ -310,7 +314,7 @@ public class WeatherFragment extends Fragment {
         mHeadCityName.setText(weather.basic.cityName.toString()+" | ");
         mHeadInfo.setText(weather.now.more.info.toString());
         mHeadWindDir.setText(weather.now.wind.direction.toString());
-        mHeadWindStr.setText(weather.now.wind.dengji.toString());
+        mHeadWindStr.setText(weather.now.wind.dengji.toString()+"级");
         mHeadRelativeSize.setText(weather.now.relativeTemp.toString()+"℃");
         mHeadBodySize.setText(weather.now.bodyTemp.toString()+"℃");
         //设置主体信息
@@ -336,6 +340,10 @@ public class WeatherFragment extends Fragment {
             mAQI.setText(weather.aqi.city.aqi);
             mAQIQuality.setText(weather.aqi.city.qult);
             mPM.setText(weather.aqi.city.pm25);
+        }else{
+
+            line.setVisibility(View.GONE);
+
         }
         mSuggest_Car.setText(weather.suggestion.cardWash.info);
         mSuggest_Comfort.setText(weather.suggestion.comfort.info);

@@ -30,13 +30,11 @@ public class Now {
 
         @SerializedName("dir")
         public String direction;
-
-        //风力等级
-
         @SerializedName("sc")
         public String dengji;
-
+        //风力等级
     }
+
     //相对湿度
     @SerializedName("hum")
     public String relativeTemp;

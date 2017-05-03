@@ -28,13 +28,9 @@ public class AddCityActivity extends SingleBaseWeatherActivity {
         setContentView(R.layout.activity_weather);
         Toast.makeText(AddCityActivity.this,"下拉换页浏览",Toast.LENGTH_SHORT).show();
     }
-
     public static void startAction(Context context){
-
-
         Intent intent = new Intent(context,AddCityActivity.class);
         context.startActivity(intent);
-        
     }
 
 }
