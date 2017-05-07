@@ -25,5 +25,10 @@ public class StaticVariable {
     //保存的字段
     public static String IS_AUTO_UPDATE= "is_auto_update";
     //服务更新的时间,一天
-    public static int TIME=24*60*60*1000;
+    public static int TIME=1*60*60*1000;
+
+    //设置是否已经读取了远程的城市信息
+
+    public static String ISREAD="isread";
+
 }

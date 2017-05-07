@@ -30,7 +30,39 @@ public class CityLab {
         mSqlLiteHelp = new OpenSqlLiteHelp(context, Schema.DBNAME,null,1);
 
     }
+    public int getCityId(String priName,String cityName){
 
+        int cityId = -1;
+        Cursor cursor = null;
+
+        cityName = cityName.substring(0,cityName.length()-1);
+        priName = priName.substring(0,priName.length()-1);
+       String sql = "select _id from "+Schema.CityTable.TABLENAME+" where "+Schema.CityTable.CityColumn.NAME+"='"+cityName+"' and "
+                +Schema.CityTable.CityColumn.PRINAMR+"='"+priName+"'";
+
+        LogUtil.d("getCityId",sql+"  "+cityName+"--"+priName);
+        try{
+            db = mSqlLiteHelp.getWritableDatabase();
+            cursor = db.rawQuery(sql,null);
+            LogUtil.d("cursor",cursor.toString());
+            if(cursor.moveToFirst()){
+
+              //  LogUtil.d("isExistsCityId",cursor.getInt(cursor.getColumnIndex(Schema.CityTable.CityColumn.ID))+"");
+                cityId = cursor.getInt(cursor.getColumnIndex(Schema.CityTable.CityColumn.ID));
+            }
+            return cityId;
+
+        }catch (Exception e){
+
+            e.printStackTrace();
+            if(cursor != null) {
+
+                cursor.close();
+            }
+            close();
+        }
+        return cityId;
+    }
     //add
 
     public void insertCity(Citys citys){
@@ -57,7 +89,7 @@ public class CityLab {
     //select
     public void insertAllCitys(List<Citys> cityses){
 
-        String sql = "insert into "+ Schema.CityTable.TABLENAME+" ("+ Schema.CityTable.CityColumn.NAME+") values (?)";
+        String sql = "insert into "+ Schema.CityTable.TABLENAME+" ("+ Schema.CityTable.CityColumn.NAME+","+Schema.CityTable.CityColumn.PRINAMR+") values (?,?)";
         boolean result = true;
         if(cityses == null || cityses.size() == 0){
 
@@ -76,7 +108,7 @@ public class CityLab {
 
                     try{
 
-                        db.execSQL(sql,new String[]{citys.getCityName()});
+                        db.execSQL(sql,new String[]{citys.getCityName(),citys.getPriName()});
 
                     }catch (Exception e){
 
@@ -217,6 +249,7 @@ public class CityLab {
                     Citys citys = new Citys();
                     citys.setId(cursor.getInt(cursor.getColumnIndex(Schema.CityTable.CityColumn.ID)));
                     citys.setCityName(cursor.getString(cursor.getColumnIndex(Schema.CityTable.CityColumn.NAME)));
+                    citys.setPriName(cursor.getString(cursor.getColumnIndex(Schema.CityTable.CityColumn.PRINAMR)));
                     cityses.add(citys);
                     cursor.moveToNext();
                 }

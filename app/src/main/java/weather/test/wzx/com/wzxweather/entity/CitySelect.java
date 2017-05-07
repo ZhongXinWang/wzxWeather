@@ -10,17 +10,22 @@ public class CitySelect {
     private int mCityId;
     private int mIsSelect;
     private String cityName;
+    private String mPriName;
+    public CitySelect(){
 
+    }
+    public String getPriName() {
+        return mPriName;
+    }
+    public void setPriName(String priName) {
+        mPriName = priName;
+    }
     public String getCityName() {
         return cityName;
     }
 
     public void setCityName(String cityName) {
         this.cityName = cityName;
-    }
-
-    public CitySelect(){
-
     }
 
     public int getId() {
@@ -49,6 +54,6 @@ public class CitySelect {
 
     public String toString(){
 
-        return getCityName();
+        return getCityName()+"("+getPriName()+")";
     }
 }

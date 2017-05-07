@@ -16,6 +16,7 @@ package weather.test.wzx.com.wzxweather.model;
 
             public final static String ID="_id";
             public final static String NAME="cityName";
+            public final static String PRINAMR="priName";
 
         }
 

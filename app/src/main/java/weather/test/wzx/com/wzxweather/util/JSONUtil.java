@@ -20,7 +20,6 @@ import weather.test.wzx.com.wzxweather.entity.Weather;
 
 public class JSONUtil {
 
-
     //获取城市
     public static StringBuilder jsonHelp(String json) throws JSONException {
 
@@ -30,11 +29,10 @@ public class JSONUtil {
         for(int i = 0 ; i < jsonArray.length();i++){
 
             JSONObject object = jsonArray.getJSONObject(i);
-            stringCity.append(object.get("cityZh")+"    （"+object.get("provinceZh")+"/"+object.get("leaderZh")+")"+",");
+            stringCity.append(object.get("cityZh")+"&"+object.get("provinceZh")+",");
         }
 
         Log.d("JsonObject",json.toString());
-
         return stringCity;
     }
 
@@ -46,14 +44,14 @@ public class JSONUtil {
 
 
         String[] str = stringBuilder.split(",");
-
         for(int i = 0 ; i < str.length;i++){
-
-
+            String cityName = str[i].substring(0,str[i].indexOf("&"));
+            String priName = str[i].substring(str[i].indexOf("&")+1,str[i].length());
+            LogUtil.d("cityName",priName+"----"+cityName);
             Citys citys = new Citys();
-            citys.setCityName(str[i]);
+            citys.setCityName(cityName);
+            citys.setPriName(priName);
             list.add(citys);
-
         }
 
         return list.size()>0?list:null;

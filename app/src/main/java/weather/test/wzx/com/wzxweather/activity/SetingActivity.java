@@ -18,7 +18,7 @@ public class SetingActivity extends SingleBaseWeatherActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setContentView(R.layout.activity_weather);
+        setContentView(R.layout.activity_add_city);
         super.onCreate(savedInstanceState);
     }
     public static void startAction(Context context){

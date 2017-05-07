@@ -1,17 +1,10 @@
 package weather.test.wzx.com.wzxweather.fragment;
-
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -21,8 +14,6 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
-import org.json.JSONException;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -30,10 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import weather.test.wzx.com.wzxweather.R;
-import weather.test.wzx.com.wzxweather.activity.SetingActivity;
-import weather.test.wzx.com.wzxweather.activity.ShowSelectActivity;
 import weather.test.wzx.com.wzxweather.entity.CitySelect;
-import weather.test.wzx.com.wzxweather.entity.Citys;
 import weather.test.wzx.com.wzxweather.entity.Forecast;
 import weather.test.wzx.com.wzxweather.entity.Weather;
 import weather.test.wzx.com.wzxweather.interfaces.HttpCallBackListener;
@@ -52,7 +40,6 @@ import static weather.test.wzx.com.wzxweather.R.id.now_info_weather;
 import static weather.test.wzx.com.wzxweather.R.id.now_quality;
 import static weather.test.wzx.com.wzxweather.R.id.now_temp;
 import static weather.test.wzx.com.wzxweather.util.JSONUtil.handleWeatherResponse;
-
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -71,7 +58,6 @@ public class WeatherFragment extends Fragment {
 
     //head控件
     private ImageView mHeadBg;
-    private Toolbar  mToolbar;
     private TextView mHeadTemp;
     private TextView mHeadCityName;
     private TextView mHeadInfo;
@@ -90,6 +76,7 @@ public class WeatherFragment extends Fragment {
     //suggest
     private TextView mSuggest_Car,mSuggest_Sport,mSuggest_Comfort,mSuggest_Flu;
     private SwipeRefreshLayout mRefreshLayout;
+
     public WeatherFragment() {
         // Required empty public constructor
     }
@@ -100,48 +87,37 @@ public class WeatherFragment extends Fragment {
         WeatherFragment fragment = new WeatherFragment();
         fragment.setArguments(args);
         return fragment;
-
     }
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        LogUtil.d("Weatheractivity","TExt1");
         mCityLab = new CityLab(getActivity());
         mCitySelect = new CitySelectLab(getActivity());
         share = new SharedPreferencesUtil(getActivity());
         mCityName = (String) getArguments().get(CITYNAME);
+        //设置fragement的菜单可用
+        setHasOptionsMenu(true);
         //mCityName  如果为空,表示不是从添加界面过来的,就需要从数据库去查找默认的城市
         if(mCityName == null){
+            //启动位置服务
             List<CitySelect> citySelect = mCitySelect.getAllCitySelects();
             if(citySelect == null) {
                 //如果没有选择项就默认使用三元这个地区
-                mCityName = "三元";
+                mCityName = "诏安";
             }else{
                 //获取默认项
                 mCityName = citySelect.get(0).getCityName();
             }
         }
+
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        LogUtil.d("Weatheractivity","TExt2");
         mView = inflater.inflate(R.layout.fragment_weather, container, false);
-        //设置fragement的菜单可用
-        setHasOptionsMenu(true);
-        //初始化id
-        init();
-        //从文件里面获取缓存的数据
-        weatherData =  share.readSharePreference(mCityName);
-        //表示本地没有缓存,从服务器去获取
-        if(weatherData.equals("")){
 
-            requestDataFromServer();
-
-        }else{
-            LogUtil.d("WeatherData",weatherData);
-            //有缓存就直接把数据解析出来,并显示
-            Weather weather =  handleWeatherResponse(weatherData);
-            showWeatherData(weather);
-        }
         return  mView;
     }
     //初始化参数
@@ -155,23 +131,41 @@ public class WeatherFragment extends Fragment {
         //初始化背景图片
         initBg();
         //启动服务
+        initService();
+    }
+
+
+    private void initService() {
+
         if(!share.readSharePreference(StaticVariable.IS_AUTO_UPDATE).equals("") && share.readSharePreference(StaticVariable.IS_AUTO_UPDATE).equals("1")){
 
             Intent intent = new Intent(getActivity(), AutoUpdateService.class);
             getActivity().startService(intent);
         }
+
     }
     private void initBg() {
         mHeadBg = (ImageView) mView.findViewById(bg);
         String bgURL = share.readSharePreference("bg");
         LogUtil.d("bgURL",bgURL);
-        if(!bgURL.equals("")){
+        String bgTime = share.readSharePreference("bgTime");
+        long time = 0;
+        if(!bgTime.equals("")){
+
+            time =  Long.parseLong(bgTime);
+
+        }else{
+            time = System.currentTimeMillis();
+        }
+        long currentTime = System.currentTimeMillis();
+        if(currentTime - time < StaticVariable.DISTANT) {
+            loadBg();
+        }else{
 
             Glide.with(getActivity()).load(bgURL).asBitmap().centerCrop().into(mHeadBg);
 
-        }else{
-            loadBg();
         }
+
     }
     private void loadBg(){
         HttpConnection.httpConnHelp(StaticVariable.BGURL, new HttpCallBackListener() {
@@ -183,6 +177,7 @@ public class WeatherFragment extends Fragment {
                     //把地址缓存起来
                     Map<String,String> m = new HashMap<String, String>();
                     m.put("bg",url);
+                    m.put("bgTime",System.currentTimeMillis()+"");
                     share.insertSharePreference(m);
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
@@ -211,7 +206,13 @@ public class WeatherFragment extends Fragment {
             @Override
             public void onRefresh() {
 
-                long time =  Long.parseLong(share.readSharePreference(mCityName+"time"));
+                long time = 0;
+                if(!share.readSharePreference(mCityName+"time").equals("")){
+
+                    time =  Long.parseLong(share.readSharePreference(mCityName+"time"));
+                }else{
+                   time = System.currentTimeMillis();
+                }
                 LogUtil.d("time",time+"");
                 long currentTime = System.currentTimeMillis();
                 if(currentTime - time < StaticVariable.DISTANT) {
@@ -229,9 +230,7 @@ public class WeatherFragment extends Fragment {
     //初始化头部控件
     private void initHead() {
 
-        mToolbar = (Toolbar) mView.findViewById(R.id.tools);
-        mToolbar.setTitle("");
-        ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
+
         // https://free-api.heweather.com/v5/weather?city=漳州&key=404f2c3e24764f65baf1067846123098
 
         mHeadTemp = (TextView) mView.findViewById(R.id.head_temp);
@@ -356,84 +355,27 @@ public class WeatherFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         //优先从数据库读取数据,如果数据没有读到就从数据库哪里去查
-        queryCitys();
-    }
+        LogUtil.d("Weatheractivity","TExt3");
+        //初始化id
+        init();
+        //从文件里面获取缓存的数据
+        weatherData =  share.readSharePreference(mCityName);
+        //表示本地没有缓存,从服务器去获取
+        if(weatherData.equals("")){
 
-    //获取所有的城市
-    private void queryCitys() {
-        List<Citys> lists = mCityLab.getAllCitys();
-        //表示还没有省份的数据,就去服务器上面加载数据
-        if(lists == null){
+            requestDataFromServer();
 
-            queryCitysFromService();
-
+        }else{
+            LogUtil.d("WeatherData",weatherData);
+            //有缓存就直接把数据解析出来,并显示
+            Weather weather =  handleWeatherResponse(weatherData);
+            showWeatherData(weather);
         }
-
-    }
-    //从服务器上面获取
-    private void queryCitysFromService() {
-        //调用自己写的httpurl
-        HttpConnection.httpConnHelp(StaticVariable.CITYURL, new HttpCallBackListener() {
-            @Override
-            public void onSuccess(InputStream str) {
-                try {
-
-                    List<Citys> cityses = JSONUtil.JsonToCity(HttpConnection.inputStreamToString(str).toString());
-
-                    mCityLab.insertAllCitys(cityses);
-
-
-                } catch (JSONException e) {
-
-                    e.printStackTrace();
-
-                }catch (Exception e){
-
-                    e.printStackTrace();
-                }
-
-            }
-
-            @Override
-            public void onFailour(Exception e) {
-
-                LogUtil.d("Weather",e.getMessage());
-
-            }
-        });
-
     }
 
-    //创建菜单,和activity不同,这里没有return 只有super来通过activity来创建菜单
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public void onDestroy() {
+        super.onDestroy();
 
-        inflater.inflate(R.menu.weather_menus, menu);
-        super.onCreateOptionsMenu(menu,inflater);
     }
-    //设置菜单的响应事件
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-
-            //添加菜单的事件响应
-            case  R.id.adds:
-                ShowSelectActivity.startAction(getActivity());
-                break;
-            //设置事件响应
-            case  R.id.sets:
-                SetingActivity.startAction(getActivity());
-                break;
-            //分享事件响应
-            case R.id.share:
-
-                break;
-
-            default:
-                break;
-
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
 }

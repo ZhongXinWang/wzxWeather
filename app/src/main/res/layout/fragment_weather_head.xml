@@ -17,22 +17,16 @@
                     android:scaleType="centerCrop"
                     app:layout_collapseMode="parallax"
                     />
-                <android.support.v7.widget.Toolbar
-                    app:titleTextColor="@color/colorWhite"
-                    android:layout_width="match_parent"
-                    android:layout_height="?actionBarSize"
-                    android:layout_alignParentTop="true"
-                    android:id="@+id/tools"
-                    app:layout_collapseMode="pin"
-                    app:layout_scrollFlags="scroll|enterAlways|snap"
-                    />
         <LinearLayout
             android:id="@+id/header"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_alignParentLeft="true"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/head_padding"
+            android:layout_marginLeft="@dimen/head_padding"
+            android:layout_marginRight="@dimen/head_padding"
+            android:layout_marginBottom="@dimen/head_padding"
+            android:layout_marginTop="50dp"
             >
             <TextView
                 android:layout_width="wrap_content"
@@ -83,7 +77,7 @@
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:id="@+id/dengji"
-                    android:text="微风"
+                    android:text="2"
                     style="@style/TextView_style"
                     />
             </LinearLayout>

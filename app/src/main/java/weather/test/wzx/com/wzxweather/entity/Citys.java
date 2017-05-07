@@ -11,8 +11,14 @@ public class Citys {
     }
 
     private int mId;
+    private String mPriName;
     private String mCityName;
-
+    public String getPriName() {
+        return mPriName;
+    }
+    public void setPriName(String priName) {
+        mPriName = priName;
+    }
     public Citys(){
 
     }
@@ -32,7 +38,7 @@ public class Citys {
     @Override
     public String toString() {
 
-        return getCityName();
+        return getCityName()+"("+getPriName()+")";
 
     }
 }

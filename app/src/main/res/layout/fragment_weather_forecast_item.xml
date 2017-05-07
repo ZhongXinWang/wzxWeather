@@ -19,7 +19,7 @@
             android:layout_height="50dp"
             android:id="@+id/icon_now"
             android:src="@drawable/a"
-            android:layout_gravity="center"
+            android:layout_gravity="left"
             />
     </LinearLayout>
         <LinearLayout

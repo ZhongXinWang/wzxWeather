@@ -28,22 +28,18 @@ public class CitySelectLab {
 
         this.mContext = context;
         mSqlLiteHelp = new OpenSqlLiteHelp(context, Schema.DBNAME,null,1);
-
     }
 
     //add
-
     public boolean insertCity(CitySelect citys){
 
-        String sql = "insert into "+ Schema.CitySelect.TABLENAME+" ("+Schema.CitySelect.CityColumn.CITYID+","+ Schema.CityTable.CityColumn.NAME+","+Schema.CitySelect.CityColumn.ISSELECT+") values (?,?,?)";
+        String sql = "insert into "+ Schema.CitySelect.TABLENAME+" ("+Schema.CitySelect.CityColumn.CITYID+","+Schema.CitySelect.CityColumn.ISSELECT+") values (?,?)";
 
+        LogUtil.d("herllo","ffffff");
         try{
 
           db =  mSqlLiteHelp.getWritableDatabase();
-
-
-          db.execSQL(sql,new String[]{citys.getCityId()+"",citys.getCityName(),citys.getIsSelect()+""});
-
+          db.execSQL(sql,new String[]{citys.getCityId()+"",citys.getIsSelect()+""});
 
             LogUtil.d("CitySelectLab",sql);
             return true;
@@ -70,9 +66,15 @@ public class CitySelectLab {
 
         try {
 
-            db =  mSqlLiteHelp.getWritableDatabase();
-             cursor = db.query(Schema.CitySelect.TABLENAME, null, Schema.CitySelect.CityColumn.CITYID + "=" + cityId, null, null, null, null);
+            try {
 
+                db = mSqlLiteHelp.getWritableDatabase();
+            }catch (Exception e){
+
+                db = mSqlLiteHelp.getReadableDatabase();
+
+            }
+             cursor = db.query(Schema.CitySelect.TABLENAME, null, Schema.CitySelect.CityColumn.CITYID + "=" + cityId, null, null, null, null);
 
             if(cursor.moveToFirst()){
 
@@ -88,7 +90,7 @@ public class CitySelectLab {
                 cursor.close();
             }
             close();
-            LogUtil.d("isExistsCityId","is exists");
+            LogUtil.d("isExistsCityId",e.getMessage());
 
             return false;
 
@@ -102,17 +104,17 @@ public class CitySelectLab {
 
     public List<CitySelect>  getAllCitySelects(){
 
+        //String sql = "select *from "+ Schema.CitySelect.TABLENAME +" order by "+Schema.CitySelect.CityColumn.ISSELECT +" desc";
+        String sql = "select a._id,a.cityId,a.isSelect,b.cityName,b.priName from "+ Schema.CitySelect.TABLENAME +" as a,"+Schema.CityTable.TABLENAME+" as b where " +
+                "(b._id=a.cityId) " + "order by "+Schema.CitySelect.CityColumn.ISSELECT +" desc";
 
-        String sql = "select *from "+ Schema.CitySelect.TABLENAME +" order by "+Schema.CitySelect.CityColumn.ISSELECT +" desc";
+        LogUtil.d("getAllCitySelects",sql);
         List<CitySelect> list;
-
         try{
-
             db =  mSqlLiteHelp.getReadableDatabase();
            Cursor cursor = db.rawQuery(sql,null);
-
            list =  toCitysList(cursor);
-
+            LogUtil.d("getAllCitySelects",list.get(0).getCityName());
             return list.size()>0?list:null;
 
         }catch (Exception e){
@@ -120,7 +122,6 @@ public class CitySelectLab {
             LogUtil.d("CitySelectLab",sql);
             close();
         }
-
         return null;
 
     }
@@ -128,11 +129,9 @@ public class CitySelectLab {
     private List<CitySelect> toCitysList(Cursor cursor){
 
         List<CitySelect> cityses = new ArrayList<>();
-
         if(cursor != null && cursor.getCount() > 0 ) {
             try {
                 cursor.moveToFirst();
-
                 while (!cursor.isAfterLast()) {
 
                     CitySelect citys = new CitySelect();
@@ -140,6 +139,7 @@ public class CitySelectLab {
                     citys.setCityName(cursor.getString(cursor.getColumnIndex(Schema.CityTable.CityColumn.NAME)));
                     citys.setCityId(cursor.getInt(cursor.getColumnIndex(Schema.CitySelect.CityColumn.CITYID)));
                     citys.setIsSelect(cursor.getInt(cursor.getColumnIndex(Schema.CitySelect.CityColumn.ISSELECT)));
+                    citys.setPriName(cursor.getString(cursor.getColumnIndex(Schema.CityTable.CityColumn.PRINAMR)));
                     cityses.add(citys);
                     cursor.moveToNext();
                 }
@@ -158,7 +158,7 @@ public class CitySelectLab {
 
             db = mSqlLiteHelp.getWritableDatabase();
             int flag = db.delete(Schema.CitySelect.TABLENAME,Schema.CitySelect.CityColumn.ID+"="+id,null);
-            LogUtil.d("delete",flag+"");
+            LogUtil.d("delete",flag+"id="+id);
             if(flag > 0){
 
                 return true;

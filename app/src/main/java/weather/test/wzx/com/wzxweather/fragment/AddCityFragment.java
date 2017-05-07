@@ -111,11 +111,9 @@ public class AddCityFragment extends Fragment {
 
                         if(!mCitySelectLab.isExistsCityId(citys.getId())){
 
-
                             //不存在的话就添加数据,并且跳到展示界面
                             CitySelect select = new CitySelect();
                             select.setCityId(citys.getId());
-                            select.setCityName(citys.getCityName());
                             select.setIsSelect(0);
                            boolean flag =  mCitySelectLab.insertCity(select);
 
@@ -128,7 +126,6 @@ public class AddCityFragment extends Fragment {
 
                                 Toast.makeText(getActivity(),R.string.fail,Toast.LENGTH_SHORT).show();
                             }
-
                         }else{
 
                             //存在的话就弹出提示
@@ -197,8 +194,6 @@ public class AddCityFragment extends Fragment {
     }
 
     private void initRefresh() {
-
-
         mSwipe_Refresh.setColorSchemeColors(getResources().getColor(R.color.colorPrimary));
         mSwipe_Refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -209,7 +204,6 @@ public class AddCityFragment extends Fragment {
 
 
         });
-
     }
     //获取查询数据
 
@@ -232,7 +226,6 @@ public class AddCityFragment extends Fragment {
             Toast.makeText(getActivity(),"没有数据更新",Toast.LENGTH_SHORT).show();
 
         }
-
     }
     private void refrestCitys() {
 

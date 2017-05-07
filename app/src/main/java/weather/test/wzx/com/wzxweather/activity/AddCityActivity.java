@@ -25,7 +25,7 @@ public class AddCityActivity extends SingleBaseWeatherActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_weather);
+        setContentView(R.layout.activity_add_city);
         Toast.makeText(AddCityActivity.this,"下拉换页浏览",Toast.LENGTH_SHORT).show();
     }
     public static void startAction(Context context){

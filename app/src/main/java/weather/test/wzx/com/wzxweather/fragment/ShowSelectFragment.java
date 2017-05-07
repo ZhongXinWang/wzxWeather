@@ -44,6 +44,7 @@ public class ShowSelectFragment extends Fragment {
     private CitySelectLab citySelect;
     private RadioGroup radio_group;
     private RadioButton radio_btn = null;
+    private List<CitySelect> mList;
     public ShowSelectFragment() {
         // Required empty public constructor
     }
@@ -82,7 +83,7 @@ public class ShowSelectFragment extends Fragment {
         mActionButton = (FloatingActionButton) mView.findViewById(R.id.fab_add);
         mText = (TextView) mView.findViewById(R.id.message);
         //获取select的值
-        List<CitySelect> mList = citySelect.getAllCitySelects();
+        mList = citySelect.getAllCitySelects();
         if(mList == null){
 
             mText.setText("没有添加城市");
@@ -119,6 +120,7 @@ public class ShowSelectFragment extends Fragment {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view,  int position, long id) {
                 final int cityId = adapter.getItem(position).getId();
+                LogUtil.d("cityIds",cityId+"");
                AlertDialog.Builder build = new AlertDialog.Builder(getActivity());
                 build.setTitle("操作提示").setIcon(R.drawable.alert);
                 build.setCancelable(false);
@@ -175,6 +177,7 @@ public class ShowSelectFragment extends Fragment {
             case android.R.id.home:
 
                 getActivity().finish();
+                WeatherActivity.toAction(getActivity(),mList.get(0).getCityName());
                 return  true;
 
             default:

@@ -19,7 +19,7 @@ public class ShowSelectActivity extends SingleBaseWeatherActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_weather);
+        setContentView(R.layout.activity_add_city);
     }
     public static void startAction(Context context){
 

@@ -108,6 +108,7 @@ public class AutoUpdateService extends Service {
                     //把地址缓存起来
                     Map<String,String> m = new HashMap<String, String>();
                     m.put("bg",url);
+                    m.put("bgTime",System.currentTimeMillis()+"");
                     share.insertSharePreference(m);
                 } catch (IOException e) {
                     e.printStackTrace();
